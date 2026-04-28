@@ -2,6 +2,7 @@
   "name": "uttam-hiring",
   "private": true,
   "version": "1.0.0",
+  "type": "module",
   "scripts": {
     "dev": "vite",
     "api:dev": "node api-server.cjs",
