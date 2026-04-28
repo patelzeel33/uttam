@@ -1,7 +1,7 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
-import { dbConnect } from '../lib/dbConnect';
-import { Applicant } from '../lib/models/Applicant';
+import { dbConnect } from '../lib/dbConnect.js';
+import { Applicant } from '../lib/models/Applicant.js';
 
 
 function verifyToken(req: VercelRequest): boolean {
