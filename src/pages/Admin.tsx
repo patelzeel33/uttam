@@ -8,7 +8,7 @@ export default function Admin() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   
-  // State for Manage Modal
+  // State for Manage Model
   const [selectedUser, setSelectedUser] = useState<any>(null);
   const [updateLoading, setUpdateLoading] = useState(false);
   const [addHoursStatus, setAddHoursStatus] = useState<string>('');
