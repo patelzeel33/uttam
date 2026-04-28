@@ -1,14 +1,15 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { verify } from 'jsonwebtoken';
-import { dbConnect } from '../../lib/dbConnect';
-import { Applicant } from '../../lib/models/Applicant';
+import jwt from 'jsonwebtoken';
+import { dbConnect } from '../lib/dbConnect';
+import { Applicant } from '../lib/models/Applicant';
+
 
 function verifyToken(req: VercelRequest): boolean {
   const JWT_SECRET = process.env.JWT_SECRET || 'uttam-hiring-secret-key-2024';
   const auth = req.headers.authorization;
   if (!auth || !auth.startsWith('Bearer ')) return false;
   try {
-    verify(auth.slice(7), JWT_SECRET);
+    jwt.verify(auth.slice(7), JWT_SECRET);
     return true;
   } catch {
     return false;

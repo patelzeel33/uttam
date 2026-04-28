@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { dbConnect } from '../lib/dbConnect';
-import { Applicant } from '../lib/models/Applicant';
+import { dbConnect } from './lib/dbConnect';
+import { Applicant } from './lib/models/Applicant';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   // CORS headers
@@ -53,6 +53,6 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Register error:', error);
-    return res.status(500).json({ error: 'Failed to submit application. Please try again.' });
+    return res.status(500).json({ error: error.message || 'Failed to submit application. Please try again.' });
   }
 }

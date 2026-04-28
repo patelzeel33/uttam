@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
-import { sign } from 'jsonwebtoken';
+import jwt from 'jsonwebtoken';
 
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   res.setHeader('Access-Control-Allow-Origin', '*');
@@ -12,12 +12,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   }
 
   try {
-    // Read credentials at request-time so env vars are always fresh
     const ADMIN_EMAIL = process.env.ADMIN_EMAIL || 'admin@uttam.com';
     const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'uttam@admin2024';
     const JWT_SECRET = process.env.JWT_SECRET || 'uttam-hiring-secret-key-2024';
 
-    const { email, password } = req.body ?? {};
+    const body = req.body ?? {};
+    const email: string = body.email ?? '';
+    const password: string = body.password ?? '';
 
     if (!email || !password) {
       return res.status(400).json({ error: 'Email and password are required.' });
@@ -27,7 +28,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(401).json({ error: 'Invalid credentials.' });
     }
 
-    const token = sign({ email, role: 'admin' }, JWT_SECRET, { expiresIn: '24h' });
+    const token = jwt.sign({ email, role: 'admin' }, JWT_SECRET, { expiresIn: '24h' });
 
     return res.status(200).json({
       success: true,
@@ -35,7 +36,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       admin: { email, role: 'admin' },
     });
   } catch (error: any) {
-    console.error('[admin/login] Error:', error?.message ?? error);
-    return res.status(500).json({ error: 'Login failed. Please try again.' });
+    console.error('[admin/login] Error:', error?.stack ?? error?.message ?? error);
+    return res.status(500).json({ error: `Login failed: ${error?.message}` });
   }
 }
