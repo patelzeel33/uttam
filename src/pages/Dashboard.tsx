@@ -243,7 +243,7 @@ export default function Dashboard() {
             </div>
 
             {/* Status Filter Tabs */}
-            <div className="flex gap-2 overflow-x-auto pb-1">
+            <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
               {["all", "pending", "interview", "active", "rejected"].map((s) => (
                 <button
                   key={s}
@@ -278,80 +278,110 @@ export default function Dashboard() {
                 <p className="text-sm mt-1">{search ? "Try a different search term" : "Applications will appear here once submitted"}</p>
               </div>
             ) : (
-              <table className="w-full text-left min-w-[900px]">
-                <thead>
-                  <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
-                    <th className="px-4 py-3 font-semibold">Applicant</th>
-                    <th className="px-4 py-3 font-semibold">Contact</th>
-                    <th className="px-4 py-3 font-semibold">City</th>
-                    <th className="px-4 py-3 font-semibold text-center">Status</th>
-                    <th className="px-4 py-3 font-semibold text-center">Hours</th>
-                    <th className="px-4 py-3 font-semibold">Date</th>
-                    <th className="px-4 py-3 font-semibold text-right">Actions</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
+              <>
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-gray-100">
                   {applicants.map((app) => {
                     const sc = STATUS_CONFIG[app.status] || STATUS_CONFIG.pending;
                     return (
-                      <tr key={app.id} className="hover:bg-blue-50/30 transition-colors group">
-                        <td className="px-4 py-3.5">
-                          <div className="font-semibold text-gray-900 text-sm">{app.fullName}</div>
-                          <div className="text-xs text-gray-400">#{app.id.slice(-6)}</div>
-                        </td>
-                        <td className="px-4 py-3.5">
-                          <div className="text-sm font-medium text-gray-900">{app.phoneNumber}</div>
-                          {app.email && <div className="text-xs text-gray-500 truncate max-w-[160px]">{app.email}</div>}
-                        </td>
-                        <td className="px-4 py-3.5 text-sm text-gray-600">{app.city || app.address?.split(",").pop()?.trim() || "—"}</td>
-                        <td className="px-4 py-3.5 text-center">
+                      <div key={app.id} className="p-4 space-y-3">
+                        <div className="flex items-start justify-between">
+                          <div>
+                            <div className="font-semibold text-gray-900">{app.fullName}</div>
+                            <div className="text-xs text-gray-400">#{app.id.slice(-6)}</div>
+                          </div>
                           <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full ${sc.color}`}>
                             {sc.icon} {sc.label}
                           </span>
-                        </td>
-                        <td className="px-4 py-3.5 text-center">
-                          <span className="font-bold text-blue-900">{app.hoursLogged || 0}</span>
-                          <span className="text-xs text-gray-400 ml-1">hrs</span>
-                        </td>
-                        <td className="px-4 py-3.5 text-xs text-gray-500">
-                          {new Date(app.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
-                        </td>
-                        <td className="px-4 py-3.5">
-                          <div className="flex items-center justify-end gap-1.5">
-                            {/* Quick approve/reject */}
-                            {app.status !== "active" && (
-                              <button
-                                onClick={() => handleQuickStatus(app.id, "active")}
-                                disabled={quickUpdateId === app.id}
-                                title="Approve"
-                                className="p-1.5 rounded-lg text-green-600 hover:bg-green-50 transition-colors"
-                              >
-                                <CheckCircle2 className="w-4 h-4" />
-                              </button>
-                            )}
-                            {app.status !== "rejected" && (
-                              <button
-                                onClick={() => handleQuickStatus(app.id, "rejected")}
-                                disabled={quickUpdateId === app.id}
-                                title="Reject"
-                                className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors"
-                              >
-                                <XCircle className="w-4 h-4" />
-                              </button>
-                            )}
-                            <button
-                              onClick={() => { setSelectedUser({ ...app }); setAddHours(""); }}
-                              className="flex items-center gap-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-lg border border-blue-200 transition-colors font-medium"
-                            >
-                              <Settings className="w-3.5 h-3.5" /> Manage
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 text-sm">
+                          <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{app.phoneNumber}</span></div>
+                          <div><span className="text-gray-500">Hours:</span> <span className="font-bold text-blue-900">{app.hoursLogged || 0}</span></div>
+                          <div><span className="text-gray-500">City:</span> {app.city || app.address?.split(",").pop()?.trim() || "—"}</div>
+                          <div><span className="text-gray-500">Date:</span> {new Date(app.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
+                        </div>
+                        <div className="flex items-center gap-2 pt-1">
+                          {app.status !== "active" && (
+                            <button onClick={() => handleQuickStatus(app.id, "active")} disabled={quickUpdateId === app.id} className="flex-1 flex items-center justify-center gap-1 text-xs bg-green-50 text-green-700 py-2 rounded-lg border border-green-200 active:scale-95 font-medium">
+                              <CheckCircle2 className="w-3.5 h-3.5" /> Approve
                             </button>
-                          </div>
-                        </td>
-                      </tr>
+                          )}
+                          {app.status !== "rejected" && (
+                            <button onClick={() => handleQuickStatus(app.id, "rejected")} disabled={quickUpdateId === app.id} className="flex-1 flex items-center justify-center gap-1 text-xs bg-red-50 text-red-700 py-2 rounded-lg border border-red-200 active:scale-95 font-medium">
+                              <XCircle className="w-3.5 h-3.5" /> Reject
+                            </button>
+                          )}
+                          <button onClick={() => { setSelectedUser({ ...app }); setAddHours(""); }} className="flex-1 flex items-center justify-center gap-1 text-xs bg-blue-50 text-blue-700 py-2 rounded-lg border border-blue-200 active:scale-95 font-medium">
+                            <Settings className="w-3.5 h-3.5" /> Manage
+                          </button>
+                        </div>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
+                </div>
+
+                {/* Desktop Table View */}
+                <table className="w-full text-left min-w-[900px] hidden md:table">
+                  <thead>
+                    <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
+                      <th className="px-4 py-3 font-semibold">Applicant</th>
+                      <th className="px-4 py-3 font-semibold">Contact</th>
+                      <th className="px-4 py-3 font-semibold">City</th>
+                      <th className="px-4 py-3 font-semibold text-center">Status</th>
+                      <th className="px-4 py-3 font-semibold text-center">Hours</th>
+                      <th className="px-4 py-3 font-semibold">Date</th>
+                      <th className="px-4 py-3 font-semibold text-right">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-gray-100">
+                    {applicants.map((app) => {
+                      const sc = STATUS_CONFIG[app.status] || STATUS_CONFIG.pending;
+                      return (
+                        <tr key={app.id} className="hover:bg-blue-50/30 transition-colors group">
+                          <td className="px-4 py-3.5">
+                            <div className="font-semibold text-gray-900 text-sm">{app.fullName}</div>
+                            <div className="text-xs text-gray-400">#{app.id.slice(-6)}</div>
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <div className="text-sm font-medium text-gray-900">{app.phoneNumber}</div>
+                            {app.email && <div className="text-xs text-gray-500 truncate max-w-[160px]">{app.email}</div>}
+                          </td>
+                          <td className="px-4 py-3.5 text-sm text-gray-600">{app.city || app.address?.split(",").pop()?.trim() || "—"}</td>
+                          <td className="px-4 py-3.5 text-center">
+                            <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full ${sc.color}`}>
+                              {sc.icon} {sc.label}
+                            </span>
+                          </td>
+                          <td className="px-4 py-3.5 text-center">
+                            <span className="font-bold text-blue-900">{app.hoursLogged || 0}</span>
+                            <span className="text-xs text-gray-400 ml-1">hrs</span>
+                          </td>
+                          <td className="px-4 py-3.5 text-xs text-gray-500">
+                            {new Date(app.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                          </td>
+                          <td className="px-4 py-3.5">
+                            <div className="flex items-center justify-end gap-1.5">
+                              {app.status !== "active" && (
+                                <button onClick={() => handleQuickStatus(app.id, "active")} disabled={quickUpdateId === app.id} title="Approve" className="p-1.5 rounded-lg text-green-600 hover:bg-green-50 transition-colors">
+                                  <CheckCircle2 className="w-4 h-4" />
+                                </button>
+                              )}
+                              {app.status !== "rejected" && (
+                                <button onClick={() => handleQuickStatus(app.id, "rejected")} disabled={quickUpdateId === app.id} title="Reject" className="p-1.5 rounded-lg text-red-600 hover:bg-red-50 transition-colors">
+                                  <XCircle className="w-4 h-4" />
+                                </button>
+                              )}
+                              <button onClick={() => { setSelectedUser({ ...app }); setAddHours(""); }} className="flex items-center gap-1 text-xs bg-blue-50 hover:bg-blue-100 text-blue-700 px-2.5 py-1.5 rounded-lg border border-blue-200 transition-colors font-medium">
+                                <Settings className="w-3.5 h-3.5" /> Manage
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </>
             )}
           </div>
 
@@ -382,8 +412,8 @@ export default function Dashboard() {
 
       {/* Manage Modal */}
       {selectedUser && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-lg shadow-2xl flex flex-col max-h-[90vh]">
+        <div className="fixed inset-0 z-[100] flex items-end sm:items-center justify-center p-0 sm:p-4 bg-black/60 backdrop-blur-sm">
+          <div className="bg-white rounded-t-2xl sm:rounded-2xl w-full sm:max-w-lg shadow-2xl flex flex-col max-h-[85vh] sm:max-h-[90vh]">
             <div className="bg-blue-900 text-white px-6 py-5 flex items-center justify-between rounded-t-2xl">
               <div>
                 <h3 className="font-bold text-lg">Manage Applicant</h3>

@@ -16,7 +16,7 @@ export interface IApplicant extends Document {
 const ApplicantSchema = new Schema<IApplicant>(
   {
     fullName: { type: String, required: true, trim: true },
-    phoneNumber: { type: String, required: true, trim: true },
+    phoneNumber: { type: String, required: true, trim: true, unique: true },
     email: { type: String, trim: true },
     address: { type: String, trim: true },
     city: { type: String, trim: true },

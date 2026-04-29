@@ -56,17 +56,17 @@ export default function Register() {
   if (success) {
     return (
       <div className="min-h-screen bg-gray-50 flex flex-col items-center justify-center p-4">
-        <div className="bg-white p-8 rounded-3xl shadow-xl max-w-md w-full text-center space-y-6 border border-gray-100">
-          <div className="w-20 h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto">
-            <CheckCircle2 className="w-10 h-10" />
+        <div className="bg-white p-6 sm:p-8 rounded-2xl sm:rounded-3xl shadow-xl max-w-md w-full text-center space-y-5 sm:space-y-6 border border-gray-100 animate-fade-in-up">
+          <div className="w-16 h-16 sm:w-20 sm:h-20 bg-green-100 text-green-500 rounded-full flex items-center justify-center mx-auto">
+            <CheckCircle2 className="w-8 h-8 sm:w-10 sm:h-10" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">Application Submitted!</h1>
-          <p className="text-gray-600">
+          <h1 className="text-xl sm:text-2xl font-bold text-gray-900">Application Submitted!</h1>
+          <p className="text-gray-600 text-sm sm:text-base">
             Thank you, {formData.fullName}. We have received your application for the Delivery Partner role.
             Our recruitment team will contact you shortly on <strong>{formData.phoneNumber}</strong>.
           </p>
-          <div className="pt-4">
-            <Link to="/" className="inline-block bg-blue-900 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-800 transition-colors">
+          <div className="pt-2 sm:pt-4">
+            <Link to="/" className="inline-block w-full sm:w-auto bg-blue-900 text-white font-bold py-3 px-8 rounded-full hover:bg-blue-800 active:bg-blue-950 transition-colors">
               Return to Home
             </Link>
           </div>
@@ -78,42 +78,42 @@ export default function Register() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col font-sans">
       <header className="bg-white sticky top-0 z-50 shadow-sm">
-        <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between">
-          <Link to="/" className="text-blue-900 flex items-center gap-1 hover:text-blue-700 font-medium">
+        <div className="max-w-3xl mx-auto px-3 sm:px-4 py-2.5 sm:py-3 flex items-center justify-between">
+          <Link to="/" className="text-blue-900 flex items-center gap-1 hover:text-blue-700 active:text-blue-950 font-medium text-sm sm:text-base">
             <ChevronLeft className="w-5 h-5" /> Back
           </Link>
           <div className="flex items-center">
-            <Logo className="w-14 h-auto" />
+            <Logo className="w-12 sm:w-14 h-auto" />
           </div>
         </div>
       </header>
 
-      <main className="flex-grow flex items-center justify-center p-4 py-10">
-        <div className="max-w-2xl w-full bg-white rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
+      <main className="flex-grow flex items-start sm:items-center justify-center p-3 sm:p-4 py-4 sm:py-10">
+        <div className="max-w-2xl w-full bg-white rounded-2xl sm:rounded-3xl shadow-lg border border-gray-100 overflow-hidden">
           {/* Form Header */}
-          <div className="bg-blue-900 text-white p-8 text-center relative overflow-hidden">
+          <div className="bg-blue-900 text-white p-5 sm:p-8 text-center relative overflow-hidden">
             <div className="absolute top-0 left-0 w-full h-full bg-blue-800 opacity-50 transform -skew-y-3 origin-bottom-left -z-0"></div>
-            <div className="relative z-10 space-y-2">
-              <h1 className="text-3xl font-black italic tracking-tight">JOIN UTTAM TODAY</h1>
-              <p className="text-blue-200">Apply for Delivery Partner • Full-Time • Direct Payroll</p>
+            <div className="relative z-10 space-y-1.5 sm:space-y-2">
+              <h1 className="text-2xl sm:text-3xl font-black italic tracking-tight">JOIN UTTAM TODAY</h1>
+              <p className="text-blue-200 text-xs sm:text-base">Apply for Delivery Partner • Full-Time • Direct Payroll</p>
             </div>
           </div>
 
           {/* Form Body */}
-          <form onSubmit={handleSubmit} className="p-8 space-y-6">
+          <form onSubmit={handleSubmit} className="p-4 sm:p-8 space-y-4 sm:space-y-6">
 
             {error && (
-              <div className="bg-red-50 text-red-600 p-4 rounded-xl flex items-start gap-3 border border-red-100">
+              <div className="bg-red-50 text-red-600 p-3 sm:p-4 rounded-xl flex items-start gap-2.5 sm:gap-3 border border-red-100 animate-fade-in-up">
                 <AlertCircle className="w-5 h-5 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold">Submission Failed</p>
-                  <p className="text-sm">{error}</p>
+                  <p className="font-semibold text-sm sm:text-base">Submission Failed</p>
+                  <p className="text-xs sm:text-sm">{error}</p>
                 </div>
               </div>
             )}
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-2">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div className="space-y-1.5 sm:space-y-2">
                 <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-2">
                   <User className="w-4 h-4 text-blue-900" /> Full Name *
                 </label>
@@ -128,7 +128,7 @@ export default function Register() {
                 />
               </div>
 
-              <div className="space-y-2">
+              <div className="space-y-1.5 sm:space-y-2">
                 <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-2">
                   <Phone className="w-4 h-4 text-blue-900" /> Phone Number *
                 </label>
@@ -136,17 +136,26 @@ export default function Register() {
                   type="tel"
                   name="phoneNumber"
                   required
+                  maxLength={10}
+                  pattern="[0-9]{10}"
+                  inputMode="numeric"
                   value={formData.phoneNumber}
-                  onChange={handleChange}
+                  onChange={(e) => {
+                    const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                    setFormData({ ...formData, phoneNumber: val });
+                  }}
                   className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent transition-all"
-                  placeholder="+91 98765 43210"
+                  placeholder="10-digit number"
                 />
+                {formData.phoneNumber.length > 0 && formData.phoneNumber.length < 10 && (
+                  <p className="text-xs text-amber-600 ml-1">{formData.phoneNumber.length}/10 digits entered</p>
+                )}
               </div>
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5 sm:space-y-2">
               <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-2">
-                <Mail className="w-4 h-4 text-blue-900" /> Email Address *
+                <Mail className="w-4 h-4 text-blue-900" /> Email Address
               </label>
               <input
                 type="email"
@@ -158,7 +167,7 @@ export default function Register() {
               />
             </div>
 
-            <div className="space-y-2">
+            <div className="space-y-1.5 sm:space-y-2">
               <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-2">
                 <MapPin className="w-4 h-4 text-blue-900" /> Full Address *
               </label>
@@ -173,14 +182,14 @@ export default function Register() {
               ></textarea>
             </div>
 
-            <div className="pt-4 mt-6 border-t border-gray-100 flex items-center justify-between gap-4">
-              <p className="text-xs text-gray-500 max-w-xs">
+            <div className="pt-3 sm:pt-4 mt-4 sm:mt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">
+              <p className="text-xs text-gray-500 max-w-xs text-center sm:text-left">
                 By applying, you agree to join under direct company payroll.
               </p>
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className={`bg-yellow-400 hover:bg-yellow-500 text-blue-900 font-bold py-3 px-8 rounded-full transition-all shadow-md flex items-center justify-center min-w-[160px] border border-yellow-500 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'hover:scale-105'}`}
+                className={`w-full sm:w-auto bg-yellow-400 hover:bg-yellow-500 active:bg-yellow-600 text-blue-900 font-bold py-3.5 sm:py-3 px-8 rounded-full transition-all shadow-md flex items-center justify-center min-w-[160px] border border-yellow-500 ${isSubmitting ? 'opacity-70 cursor-not-allowed' : 'active:scale-95 sm:hover:scale-105'}`}
               >
                 {isSubmitting ? (
                   <div className="w-5 h-5 border-2 border-blue-900 border-t-transparent rounded-full animate-spin"></div>

@@ -26,8 +26,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       return res.status(400).json({ error: 'Full Name and Phone Number are required.' });
     }
 
-    if (phoneNumber.replace(/\D/g, '').length < 10) {
-      return res.status(400).json({ error: 'Please enter a valid phone number.' });
+    const cleanPhone = phoneNumber.replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      return res.status(400).json({ error: 'Please enter a valid 10-digit phone number.' });
     }
 
     const applicant = new Applicant({
@@ -53,6 +54,9 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     });
   } catch (error: any) {
     console.error('Register error:', error);
+    if (error.code === 11000) {
+      return res.status(400).json({ error: 'This phone number is already registered. Our team will contact you soon.' });
+    }
     return res.status(500).json({ error: error.message || 'Failed to submit application. Please try again.' });
   }
 }
