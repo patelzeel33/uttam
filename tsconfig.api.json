@@ -12,5 +12,11 @@
     "lib": ["ES2020"]
   },
   "include": ["api/**/*"],
-  "exclude": ["node_modules", "src", "dist"]
+  "exclude": ["node_modules", "src", "dist"],
+  "ts-node": {
+    "experimentalResolver": true,
+    "moduleTypes": {
+      "**/*.ts": "cjs"
+    }
+  }
 }
