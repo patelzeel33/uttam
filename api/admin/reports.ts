@@ -38,56 +38,92 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       matchFilter.applicantId = new mongoose.Types.ObjectId(applicantId);
     }
 
-    // Aggregate performance by applicant
-    const performance = await Attendance.aggregate([
-      { $match: matchFilter },
-      {
-        $group: {
-          _id: '$applicantId',
-          totalHours: { $sum: '$hoursWorked' },
-          daysWorked: { $addToSet: { $dateToString: { format: '%Y-%m-%d', date: '$date' } } },
-          totalSessions: { $sum: 1 },
-          avgHoursPerDay: { $avg: '$hoursWorked' },
-          maxHoursInDay: { $max: '$hoursWorked' },
-          minHoursInDay: { $min: '$hoursWorked' },
-          firstLogin: { $min: '$loginTime' },
-          lastLogout: { $max: '$logoutTime' },
-        },
-      },
+    // Aggregate performance by applicant (fetch all active applicants + anyone with attendance in this period)
+    const matchApplicant: any = {
+      $or: [ { status: 'active' } ]
+    };
+    if (applicantId && mongoose.Types.ObjectId.isValid(applicantId)) {
+      matchApplicant._id = new mongoose.Types.ObjectId(applicantId);
+    }
+
+    const performance = await Applicant.aggregate([
+      { $match: matchApplicant },
       {
         $lookup: {
-          from: 'applicants',
-          localField: '_id',
-          foreignField: '_id',
-          as: 'applicant',
-        },
+          from: 'attendances',
+          let: { appId: '$_id' },
+          pipeline: [
+            {
+              $match: {
+                $expr: { $eq: ['$applicantId', '$$appId'] },
+                date: { $gte: startDate, $lte: endDate }
+              }
+            }
+          ],
+          as: 'attendanceRecords'
+        }
       },
-      { $unwind: '$applicant' },
       {
         $project: {
           applicantId: '$_id',
-          fullName: '$applicant.fullName',
-          phoneNumber: '$applicant.phoneNumber',
-          email: '$applicant.email',
-          city: '$applicant.city',
-          status: '$applicant.status',
-          totalHours: { $round: ['$totalHours', 2] },
-          daysWorked: { $size: '$daysWorked' },
-          totalSessions: 1,
-          avgHoursPerDay: { $round: ['$avgHoursPerDay', 2] },
-          maxHoursInDay: { $round: ['$maxHoursInDay', 2] },
-          minHoursInDay: { $round: ['$minHoursInDay', 2] },
-          firstLogin: 1,
-          lastLogout: 1,
+          fullName: 1,
+          phoneNumber: 1,
+          email: 1,
+          city: 1,
+          status: 1,
+          attendanceRecords: 1,
+          // Extract specific data to calculate days worked etc.
+          totalHours: { $round: [{ $sum: '$attendanceRecords.hoursWorked' }, 2] },
+          totalSessions: { $size: '$attendanceRecords' },
+          daysWorked: {
+            $size: {
+              $setUnion: {
+                $map: {
+                  input: '$attendanceRecords',
+                  as: 'record',
+                  in: { $dateToString: { format: '%Y-%m-%d', date: '$$record.date' } }
+                }
+              }
+            }
+          },
+          avgHoursPerDay: {
+            $round: [
+              { $cond: [ { $gt: [{ $size: '$attendanceRecords' }, 0] }, { $avg: '$attendanceRecords.hoursWorked' }, 0 ] },
+              2
+            ]
+          },
+          maxHoursInDay: {
+            $round: [
+              { $cond: [ { $gt: [{ $size: '$attendanceRecords' }, 0] }, { $max: '$attendanceRecords.hoursWorked' }, 0 ] },
+              2
+            ]
+          },
+          minHoursInDay: {
+            $round: [
+              { $cond: [ { $gt: [{ $size: '$attendanceRecords' }, 0] }, { $min: '$attendanceRecords.hoursWorked' }, 0 ] },
+              2
+            ]
+          },
+          firstLogin: { $min: '$attendanceRecords.loginTime' },
+          lastLogout: { $max: '$attendanceRecords.logoutTime' }
+        }
+      },
+      {
+        $addFields: {
           attendancePercentage: {
             $round: [
-              { $multiply: [{ $divide: [{ $size: '$daysWorked' }, Math.max(totalWorkingDays, 1)] }, 100] },
-              1,
-            ],
-          },
-        },
+              {
+                $multiply: [
+                  { $divide: ['$daysWorked', Math.max(totalWorkingDays, 1)] },
+                  100
+                ]
+              },
+              1
+            ]
+          }
+        }
       },
-      { $sort: { totalHours: -1 } },
+      { $sort: { totalHours: -1 } }
     ]);
 
     // Summary stats

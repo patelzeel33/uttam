@@ -78,8 +78,10 @@ export default function Reports() {
       if (res.status === 401) { localStorage.removeItem("admin_token"); navigate("/admin"); return; }
       if (!res.ok) throw new Error("Failed to fetch report");
       const data = await res.json();
+      console.log("[Reports] Fetched data:", data);
       setReport(data.report);
     } catch (err: any) {
+      console.error("[Reports] Fetch error:", err);
       setError(err.message);
     } finally {
       setLoading(false);
@@ -336,9 +338,9 @@ export default function Reports() {
                           </span>
                         </div>
                         <div className="grid grid-cols-3 gap-2 text-sm">
-                          <div><span className="text-gray-500 text-xs">Hours</span><div className="font-bold text-blue-900">{p.totalHours}</div></div>
-                          <div><span className="text-gray-500 text-xs">Days</span><div className="font-bold">{p.daysWorked}</div></div>
-                          <div><span className="text-gray-500 text-xs">Avg/Day</span><div className="font-bold">{p.avgHoursPerDay}</div></div>
+                          <div><span className="text-gray-500 text-xs">Hours</span><div className="font-bold text-blue-900">{p.totalHours ?? 0}</div></div>
+                          <div><span className="text-gray-500 text-xs">Days</span><div className="font-bold">{p.daysWorked ?? 0}</div></div>
+                          <div><span className="text-gray-500 text-xs">Avg/Day</span><div className="font-bold">{p.avgHoursPerDay ?? 0}</div></div>
                         </div>
                       </div>
                     ))}
@@ -380,8 +382,8 @@ export default function Reports() {
                               <span className="font-bold text-gray-900">{p.daysWorked}</span>
                               <span className="text-xs text-gray-400 ml-1">/ {report.totalWorkingDays}</span>
                             </td>
-                            <td className="px-4 py-3.5 font-semibold text-gray-700">{p.avgHoursPerDay} hrs</td>
-                            <td className="px-4 py-3.5 text-sm text-gray-600">{p.minHoursInDay} / {p.maxHoursInDay} hrs</td>
+                            <td className="px-4 py-3.5 font-semibold text-gray-700">{p.avgHoursPerDay ?? 0} hrs</td>
+                            <td className="px-4 py-3.5 text-sm text-gray-600">{p.minHoursInDay ?? 0} / {p.maxHoursInDay ?? 0} hrs</td>
                             <td className="px-4 py-3.5">
                               <div className="flex items-center gap-2">
                                 <div className="w-24 h-2.5 bg-gray-100 rounded-full overflow-hidden">
