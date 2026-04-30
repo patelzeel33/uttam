@@ -102,44 +102,41 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const monthName = new Date(reportYear, reportMonth - 1).toLocaleString('en-IN', { month: 'long', year: 'numeric' });
 
     if (exportFormat === 'csv') {
-      // ─── DETAILED CSV ───
-      const detailHeaders = ['Name', 'Phone', 'Email', 'City', 'Status', 'Date', 'Login Time', 'Logout Time', 'Hours Worked', 'Notes'];
-      const detailRows = records.map((r: any) => [
-        `"${r.fullName}"`,
-        `"${r.phoneNumber}"`,
-        `"${r.email || ''}"`,
-        `"${r.city || ''}"`,
-        `"${r.status}"`,
-        `"${new Date(r.date).toLocaleDateString('en-IN')}"`,
-        `"${new Date(r.loginTime).toLocaleString('en-IN')}"`,
-        `"${r.logoutTime ? new Date(r.logoutTime).toLocaleString('en-IN') : 'Still Active'}"`,
-        `"${r.hoursWorked.toFixed(2)}"`,
-        `"${(r.notes || '').replace(/"/g, '""')}"`,
-      ].join(','));
+      const monthStr = new Date(reportYear, reportMonth - 1).toLocaleString('en-IN', { month: 'long' });
 
-      // Summary section
-      const summaryHeaders = ['Name', 'Phone', 'Email', 'City', 'Status', 'Total Hours', 'Days Worked', 'Total Sessions'];
-      const summaryRows = summary.map((s: any) => [
-        `"${s.fullName}"`,
-        `"${s.phoneNumber}"`,
-        `"${s.email || ''}"`,
-        `"${s.city || ''}"`,
-        `"${s.status}"`,
-        `"${s.totalHours}"`,
-        `"${s.daysWorked}"`,
-        `"${s.totalSessions}"`,
-      ].join(','));
+      // ─── PER MONTH REPORT ───
+      const monthlyHeaders = ['Name', 'Month', 'Total Hours'];
+      const monthlyRows = summary.map((s: any) => {
+        return [
+          `"${s.fullName}"`,
+          `"${monthStr}"`,
+          `"${s.totalHours}"`
+        ].join(',');
+      });
+
+      // ─── PER DAY REPORT ───
+      const dailyHeaders = ['Name', 'Day', 'Month', 'Working Hours'];
+      const dailyRows = records.map((r: any) => {
+        const d = new Date(r.date);
+        const day = d.getDate();
+        return [
+          `"${r.fullName}"`,
+          `"${day}"`,
+          `"${monthStr}"`,
+          `"${r.hoursWorked.toFixed(2)}"`
+        ].join(',');
+      });
 
       const csv = [
-        `UTTAM Business Consultancy - Performance Report - ${monthName}`,
+        `UTTAM Business Consultancy - Performance Report - ${monthStr} ${reportYear}`,
         '',
-        '=== MONTHLY SUMMARY ===',
-        summaryHeaders.join(','),
-        ...summaryRows,
+        '=== PER MONTH REPORT ===',
+        monthlyHeaders.join(','),
+        ...monthlyRows,
         '',
-        '=== DETAILED ATTENDANCE LOG ===',
-        detailHeaders.join(','),
-        ...detailRows,
+        '=== PER DAY REPORT ===',
+        dailyHeaders.join(','),
+        ...dailyRows
       ].join('\n');
 
       // Add BOM for Excel compatibility
