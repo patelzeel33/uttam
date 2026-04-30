@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router";
 import {
   RefreshCw, Download, LogOut, Search, X, Settings,
   PlusCircle, ChevronLeft, ChevronRight, Users, Clock,
-  CheckCircle2, XCircle, AlertCircle
+  CheckCircle2, XCircle, AlertCircle, BarChart3
 } from "lucide-react";
 import Logo from "../components/Logo";
 
@@ -173,6 +173,9 @@ export default function Dashboard() {
             </div>
           </div>
           <div className="flex items-center gap-2">
+            <Link to="/reports" className="flex items-center gap-1.5 text-sm bg-yellow-400/20 hover:bg-yellow-400/30 text-yellow-300 hover:text-yellow-200 px-3 py-2 rounded-lg transition-colors font-medium">
+              <BarChart3 className="w-4 h-4" /> Reports
+            </Link>
             <Link to="/" className="text-blue-300 hover:text-white transition-colors text-sm hidden sm:block">
               View Site
             </Link>

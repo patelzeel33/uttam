@@ -36,11 +36,17 @@ const PORT = process.env.API_PORT || 3001;
 
 // Route map: METHOD /path -> handler file
 const routes = {
-  'POST /api/register':            './api/register.ts',
-  'POST /api/admin/login':         './api/admin/login.ts',
-  'GET /api/admin/applicants':     './api/admin/applicants.ts',
-  'PATCH /api/admin/update-status':'./api/admin/update-status.ts',
-  'GET /api/health':               './api/health.ts',
+  'POST /api/register':              './api/register.ts',
+  'POST /api/admin/login':           './api/admin/login.ts',
+  'GET /api/admin/applicants':       './api/admin/applicants.ts',
+  'PATCH /api/admin/update-status':  './api/admin/update-status.ts',
+  'GET /api/health':                 './api/health.ts',
+  // Reporting module
+  'POST /api/admin/attendance':      './api/admin/attendance.ts',
+  'GET /api/admin/attendance':       './api/admin/attendance.ts',
+  'PATCH /api/admin/attendance':     './api/admin/attendance.ts',
+  'GET /api/admin/reports':          './api/admin/reports.ts',
+  'GET /api/admin/export-report':    './api/admin/export-report.ts',
 };
 
 function parseBody(req) {

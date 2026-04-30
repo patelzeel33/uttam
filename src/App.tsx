@@ -3,6 +3,7 @@ import Home from "./pages/Home";
 import Register from "./pages/Register";
 import AdminLogin from "./pages/AdminLogin";
 import Dashboard from "./pages/Dashboard";
+import Reports from "./pages/Reports";
 import FloatingContact from "./components/FloatingContact";
 
 export default function App() {
@@ -13,6 +14,7 @@ export default function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/reports" element={<Reports />} />
       </Routes>
       <FloatingContact />
     </BrowserRouter>
