@@ -34,11 +34,10 @@ export default function FloatingContact() {
       <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex flex-col gap-2.5 sm:gap-3 items-center safe-bottom">
         {/* Action buttons — always visible on desktop, toggle on mobile */}
         <div
-          className={`flex flex-col gap-2.5 sm:gap-3 items-center transition-all duration-300 ${
-            isOpen
+          className={`flex flex-col gap-2.5 sm:gap-3 items-center transition-all duration-300 ${isOpen
               ? "opacity-100 translate-y-0 pointer-events-auto"
               : "opacity-0 translate-y-4 pointer-events-none sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
-          }`}
+            }`}
         >
           {/* Share Button */}
           <button
@@ -70,7 +69,7 @@ export default function FloatingContact() {
 
         {/* WhatsApp Button — always visible, largest */}
         <a
-          href="https://wa.me/918866611564?text=Hi%2C%20I%20am%20interested%20in%20the%20Delivery%20Partner%20job%20at%20UTTAM"
+          href="https://wa.me/918866610564?text=Hi%2C%20I%20am%20interested%20in%20the%20Delivery%20Partner%20job%20at%20UTTAM"
           target="_blank"
           rel="noopener noreferrer"
           className="w-14 h-14 sm:w-[60px] sm:h-[60px] bg-green-500 text-white rounded-full flex items-center justify-center shadow-xl hover:bg-green-600 transition-all active:scale-90 hover:scale-110"
