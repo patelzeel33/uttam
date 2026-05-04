@@ -59,7 +59,7 @@ export default function FloatingContact() {
 
           {/* Call Button */}
           <a
-            href="tel:+918866611564"
+            href="tel:+918866610564"
             className="w-11 h-11 sm:w-13 sm:h-13 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-all active:scale-90 hover:scale-110"
             title="Call Us"
           >
@@ -69,7 +69,7 @@ export default function FloatingContact() {
 
         {/* WhatsApp Button — always visible, largest */}
         <a
-          href="https://wa.me/918866610564?text=Hi%2C%20I%20am%20interested%20in%20the%20Delivery%20Partner%20job%20at%20UTTAM"
+          href="https://wa.me/918866611564?text=Hi%2C%20I%20am%20interested%20in%20the%20Delivery%20Partner%20job%20at%20UTTAM"
           target="_blank"
           rel="noopener noreferrer"
           className="w-14 h-14 sm:w-[60px] sm:h-[60px] bg-green-500 text-white rounded-full flex items-center justify-center shadow-xl hover:bg-green-600 transition-all active:scale-90 hover:scale-110"
