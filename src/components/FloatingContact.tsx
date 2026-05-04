@@ -50,7 +50,7 @@ export default function FloatingContact() {
 
           {/* Email Button */}
           <a
-            href="contact@uttamconsultancy.com?subject=Application for Delivery Partner"
+            href="mailto:contact@uttamconsultancy.com?subject=Application for Delivery Partner&body=Hello, I am interested in applying for the Delivery Partner role."
             className="w-11 h-11 sm:w-13 sm:h-13 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all active:scale-90 hover:scale-110"
             title="Email Us"
           >
@@ -59,7 +59,7 @@ export default function FloatingContact() {
 
           {/* Call Button */}
           <a
-            href="tel:+91886661564"
+            href="tel:+918866611564"
             className="w-11 h-11 sm:w-13 sm:h-13 bg-blue-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-blue-600 transition-all active:scale-90 hover:scale-110"
             title="Call Us"
           >
