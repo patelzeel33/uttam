@@ -35,8 +35,8 @@ export default function FloatingContact() {
         {/* Action buttons — always visible on desktop, toggle on mobile */}
         <div
           className={`flex flex-col gap-2.5 sm:gap-3 items-center transition-all duration-300 ${isOpen
-              ? "opacity-100 translate-y-0 pointer-events-auto"
-              : "opacity-0 translate-y-4 pointer-events-none sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
+            ? "opacity-100 translate-y-0 pointer-events-auto"
+            : "opacity-0 translate-y-4 pointer-events-none sm:opacity-100 sm:translate-y-0 sm:pointer-events-auto"
             }`}
         >
           {/* Share Button */}
