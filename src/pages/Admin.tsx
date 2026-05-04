@@ -74,7 +74,7 @@ export default function Admin() {
   const handleExport = () => {
     if (applications.length === 0) return;
     
-    const headers = ['Full Name', 'Phone', 'Email', 'Address', 'Status', 'Hours Logged', 'Submitted At'];
+    const headers = ['Full Name', 'Phone', 'Email', 'Address', 'Referral Code', 'Riders Referred', 'Status', 'Hours Logged', 'Submitted At'];
     const csvContent = [
       headers.join(','),
       ...applications.map(app => [
@@ -82,6 +82,8 @@ export default function Admin() {
         `"${app.phoneNumber || ''}"`,
         `"${app.email || ''}"`,
         `"${app.address || ''}"`,
+        `"${app.referralCode || ''}"`,
+        `"${app.ridersReferred || 0}"`,
         `"${app.status || 'pending'}"`,
         `"${app.hoursLogged || 0}"`,
         `"${new Date(app.submittedAt).toLocaleString()}"`
@@ -165,6 +167,7 @@ export default function Admin() {
                     <th className="p-4 font-semibold">Contact</th>
                     <th className="p-4 font-semibold">Address</th>
                     <th className="p-4 font-semibold text-center">Status</th>
+                    <th className="p-4 font-semibold text-center">Referred</th>
                     <th className="p-4 font-semibold text-center">Total Hours</th>
                     <th className="p-4 font-semibold">Date</th>
                     <th className="p-4 font-semibold text-right">Actions</th>
@@ -181,6 +184,7 @@ export default function Admin() {
                         <div className="text-sm">
                           <div className="font-medium text-gray-900">{app.phoneNumber}</div>
                           {app.email && <div className="text-gray-500">{app.email}</div>}
+                          {app.referralCode && <div className="text-xs text-blue-600 mt-1">Ref: {app.referralCode}</div>}
                         </div>
                       </td>
                       <td className="p-4 max-w-[200px]">
@@ -196,6 +200,10 @@ export default function Admin() {
                             'bg-blue-100 text-blue-700'}`}>
                           {app.status || 'pending'}
                         </span>
+                      </td>
+                      <td className="p-4 text-center">
+                         <div className="font-bold text-green-700 text-lg">{app.ridersReferred || 0}</div>
+                         <div className="text-[10px] text-gray-500 uppercase">riders</div>
                       </td>
                       <td className="p-4 text-center">
                          <div className="font-bold text-blue-900 text-lg">{app.hoursLogged || 0}</div>

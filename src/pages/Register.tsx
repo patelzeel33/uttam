@@ -14,7 +14,8 @@ export default function Register() {
     phoneNumber: "",
     email: "",
     address: "",
-    experience: "none"
+    experience: "none",
+    referralCode: ""
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -180,6 +181,20 @@ export default function Register() {
                 className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent transition-all resize-none"
                 placeholder="Enter your current residential address"
               ></textarea>
+            </div>
+
+            <div className="space-y-1.5 sm:space-y-2">
+              <label className="text-sm font-semibold text-gray-700 ml-1 flex items-center gap-2">
+                <User className="w-4 h-4 text-blue-900" /> Reference Code (User ID)
+              </label>
+              <input
+                type="text"
+                name="referralCode"
+                value={formData.referralCode}
+                onChange={handleChange}
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-blue-900 focus:border-transparent transition-all"
+                placeholder="e.g. USER123"
+              />
             </div>
 
             <div className="pt-3 sm:pt-4 mt-4 sm:mt-6 border-t border-gray-100 flex flex-col-reverse sm:flex-row items-center justify-between gap-3 sm:gap-4">

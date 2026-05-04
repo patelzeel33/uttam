@@ -19,7 +19,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
   try {
     await dbConnect();
 
-    const { fullName, phoneNumber, email, address, city, experience, hasLicense } = req.body;
+    const { fullName, phoneNumber, email, address, city, experience, hasLicense, referralCode } = req.body;
 
     // Validation
     if (!fullName || !phoneNumber) {
@@ -39,6 +39,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       city: city?.trim(),
       experience,
       hasLicense,
+      referralCode: referralCode?.trim(),
       status: 'pending',
       hoursLogged: 0,
       submittedAt: new Date(),
@@ -46,6 +47,22 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
 
     await applicant.save();
     console.log('New applicant saved:', applicant._id);
+
+    if (referralCode && referralCode.trim() !== '') {
+      try {
+        const cleanedCode = referralCode.trim();
+        if (cleanedCode.length === 24) {
+          await Applicant.findByIdAndUpdate(cleanedCode, { $inc: { ridersReferred: 1 } });
+        } else {
+          await Applicant.findOneAndUpdate(
+            { phoneNumber: cleanedCode },
+            { $inc: { ridersReferred: 1 } }
+          );
+        }
+      } catch (err) {
+        console.error('Failed to update referrer count:', err);
+      }
+    }
 
     return res.status(201).json({
       success: true,

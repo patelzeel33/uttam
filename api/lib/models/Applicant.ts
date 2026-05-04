@@ -11,6 +11,8 @@ export interface IApplicant extends Document {
   status: 'pending' | 'interview' | 'active' | 'rejected';
   hoursLogged: number;
   submittedAt: Date;
+  referralCode?: string;
+  ridersReferred?: number;
 }
 
 const ApplicantSchema = new Schema<IApplicant>(
@@ -29,6 +31,8 @@ const ApplicantSchema = new Schema<IApplicant>(
     },
     hoursLogged: { type: Number, default: 0 },
     submittedAt: { type: Date, default: Date.now },
+    referralCode: { type: String, trim: true },
+    ridersReferred: { type: Number, default: 0 },
   },
   { timestamps: true }
 );
