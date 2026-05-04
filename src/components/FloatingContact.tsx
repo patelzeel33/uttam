@@ -50,7 +50,7 @@ export default function FloatingContact() {
 
           {/* Email Button */}
           <a
-            href="mailto:hr@example.com?subject=Application for Delivery Partner"
+            href="contact@uttamconsultancy.com?subject=Application for Delivery Partner"
             className="w-11 h-11 sm:w-13 sm:h-13 bg-red-500 text-white rounded-full flex items-center justify-center shadow-lg hover:bg-red-600 transition-all active:scale-90 hover:scale-110"
             title="Email Us"
           >
