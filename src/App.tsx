@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import AdminLogin from "./pages/AdminLogin";
 import Dashboard from "./pages/Dashboard";
 import Reports from "./pages/Reports";
+import MyReferrals from "./pages/MyReferrals";
 import FloatingContact from "./components/FloatingContact";
 
 export default function App() {
@@ -15,6 +16,7 @@ export default function App() {
         <Route path="/admin" element={<AdminLogin />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/reports" element={<Reports />} />
+        <Route path="/my-referrals" element={<MyReferrals />} />
       </Routes>
       <FloatingContact />
     </BrowserRouter>

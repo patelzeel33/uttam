@@ -2,6 +2,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import jwt from 'jsonwebtoken';
 import { dbConnect } from '../lib/dbConnect.js';
 import { Applicant } from '../lib/models/Applicant.js';
+import { Referral } from '../lib/models/Referral.js';
 
 
 function verifyToken(req: VercelRequest): boolean {
@@ -43,6 +44,7 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         { phoneNumber: { $regex: search, $options: 'i' } },
         { city: { $regex: search, $options: 'i' } },
         { email: { $regex: search, $options: 'i' } },
+        { referral_code: { $regex: search, $options: 'i' } },
       ];
     }
     if (statusFilter && statusFilter !== 'all') {
@@ -56,9 +58,42 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       .limit(limit)
       .lean();
 
+    // For each applicant, look up who referred them
+    const applicantIds = applicants.map(a => a._id);
+    const referrals = await Referral.find({
+      referred_user_id: { $in: applicantIds }
+    }).lean();
+
+    // Build a map: referred_user_id -> referrer_id
+    const referralMap = new Map(
+      referrals.map(r => [r.referred_user_id.toString(), r.referrer_id.toString()])
+    );
+
+    // Get referrer names
+    const referrerIds = [...new Set(referrals.map(r => r.referrer_id.toString()))];
+    const referrers = await Applicant.find({ _id: { $in: referrerIds } })
+      .select('fullName referral_code')
+      .lean();
+    const referrerMap = new Map(
+      referrers.map(r => [r._id.toString(), { fullName: r.fullName, referral_code: r.referral_code }])
+    );
+
+    const enrichedApplicants = applicants.map(a => {
+      const referrerId = referralMap.get(a._id.toString());
+      const referrer = referrerId ? referrerMap.get(referrerId) : null;
+      return {
+        ...a,
+        id: a._id.toString(),
+        referral_code: a.referral_code,
+        ridersReferred: a.ridersReferred || 0,
+        referredByName: referrer?.fullName || null,
+        referredByCode: referrer?.referral_code || null,
+      };
+    });
+
     return res.status(200).json({
       success: true,
-      applicants: applicants.map((a) => ({ ...a, id: a._id.toString() })),
+      applicants: enrichedApplicants,
       total,
       page,
       totalPages: Math.ceil(total / limit),

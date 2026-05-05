@@ -37,6 +37,7 @@ const PORT = process.env.API_PORT || 3001;
 // Route map: METHOD /path -> handler file
 const routes = {
   'POST /api/register':              './api/register.ts',
+  'GET /api/referral-info':          './api/referral-info.ts',
   'POST /api/admin/login':           './api/admin/login.ts',
   'GET /api/admin/applicants':       './api/admin/applicants.ts',
   'PATCH /api/admin/update-status':  './api/admin/update-status.ts',

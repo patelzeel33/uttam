@@ -3,7 +3,7 @@ import { useNavigate, Link } from "react-router";
 import {
   RefreshCw, Download, LogOut, Search, X, Settings,
   PlusCircle, ChevronLeft, ChevronRight, Users, Clock,
-  CheckCircle2, XCircle, AlertCircle, BarChart3
+  CheckCircle2, XCircle, AlertCircle, BarChart3, Gift, Copy, Check
 } from "lucide-react";
 import Logo from "../components/Logo";
 
@@ -17,6 +17,10 @@ interface Applicant {
   status: string;
   hoursLogged: number;
   submittedAt: string;
+  referral_code?: string;
+  ridersReferred?: number;
+  referredByName?: string;
+  referredByCode?: string;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
@@ -303,6 +307,23 @@ export default function Dashboard() {
                           <div><span className="text-gray-500">City:</span> {app.city || app.address?.split(",").pop()?.trim() || "—"}</div>
                           <div><span className="text-gray-500">Date:</span> {new Date(app.submittedAt).toLocaleDateString("en-IN", { day: "numeric", month: "short" })}</div>
                         </div>
+                        {/* Referral Info */}
+                        <div className="bg-blue-50/50 rounded-lg p-2.5 space-y-1">
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-500 flex items-center gap-1"><Gift className="w-3 h-3" /> Code:</span>
+                            <span className="font-mono font-bold text-blue-700">{app.referral_code || '—'}</span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-gray-500">Referred:</span>
+                            <span className="font-bold text-green-700">{app.ridersReferred || 0} riders</span>
+                          </div>
+                          {app.referredByName && (
+                            <div className="flex items-center justify-between text-xs">
+                              <span className="text-gray-500">Referred by:</span>
+                              <span className="font-medium text-blue-800">{app.referredByName} <span className="font-mono text-blue-500">({app.referredByCode})</span></span>
+                            </div>
+                          )}
+                        </div>
                         <div className="flex items-center gap-2 pt-1">
                           {app.status !== "active" && (
                             <button onClick={() => handleQuickStatus(app.id, "active")} disabled={quickUpdateId === app.id} className="flex-1 flex items-center justify-center gap-1 text-xs bg-green-50 text-green-700 py-2 rounded-lg border border-green-200 active:scale-95 font-medium">
@@ -324,13 +345,14 @@ export default function Dashboard() {
                 </div>
 
                 {/* Desktop Table View */}
-                <table className="w-full text-left min-w-[900px] hidden md:table">
+                <table className="w-full text-left min-w-[1100px] hidden md:table">
                   <thead>
                     <tr className="bg-gray-50 text-gray-600 text-xs uppercase tracking-wider border-b border-gray-200">
                       <th className="px-4 py-3 font-semibold">Applicant</th>
                       <th className="px-4 py-3 font-semibold">Contact</th>
                       <th className="px-4 py-3 font-semibold">City</th>
                       <th className="px-4 py-3 font-semibold text-center">Status</th>
+                      <th className="px-4 py-3 font-semibold text-center">Referral</th>
                       <th className="px-4 py-3 font-semibold text-center">Hours</th>
                       <th className="px-4 py-3 font-semibold">Date</th>
                       <th className="px-4 py-3 font-semibold text-right">Actions</th>
@@ -354,6 +376,18 @@ export default function Dashboard() {
                             <span className={`inline-flex items-center gap-1 px-2.5 py-1 text-xs font-semibold rounded-full ${sc.color}`}>
                               {sc.icon} {sc.label}
                             </span>
+                          </td>
+                          <td className="px-4 py-3.5 text-center">
+                            <div>
+                              <span className="font-mono text-xs font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded">{app.referral_code || '—'}</span>
+                            </div>
+                            <div className="mt-1">
+                              <span className="text-xs font-bold text-green-700">{app.ridersReferred || 0}</span>
+                              <span className="text-[10px] text-gray-400 ml-0.5">referred</span>
+                            </div>
+                            {app.referredByName && (
+                              <div className="text-[10px] text-gray-500 mt-0.5">by {app.referredByName}</div>
+                            )}
                           </td>
                           <td className="px-4 py-3.5 text-center">
                             <span className="font-bold text-blue-900">{app.hoursLogged || 0}</span>
@@ -436,6 +470,29 @@ export default function Dashboard() {
                 <div><span className="text-gray-500">Phone:</span> <span className="font-medium">{selectedUser.phoneNumber}</span></div>
                 <div><span className="text-gray-500">Email:</span> <span className="font-medium">{selectedUser.email || "—"}</span></div>
                 <div className="col-span-2"><span className="text-gray-500">Address:</span> <span className="font-medium">{selectedUser.address || "—"}</span></div>
+              </div>
+              {/* Referral Info Card */}
+              <div className="mb-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-100">
+                <div className="flex items-center gap-2 mb-3">
+                  <Gift className="w-4 h-4 text-blue-700" />
+                  <span className="text-sm font-bold text-blue-900 uppercase tracking-wide">Referral Info</span>
+                </div>
+                <div className="grid grid-cols-2 gap-3 text-sm">
+                  <div>
+                    <span className="text-gray-500">Code:</span>{" "}
+                    <span className="font-mono font-bold text-blue-700">{selectedUser.referral_code || '—'}</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-500">Referred:</span>{" "}
+                    <span className="font-bold text-green-700">{selectedUser.ridersReferred || 0} riders</span>
+                  </div>
+                  {selectedUser.referredByName && (
+                    <div className="col-span-2">
+                      <span className="text-gray-500">Referred by:</span>{" "}
+                      <span className="font-medium text-blue-800">{selectedUser.referredByName} <span className="font-mono text-blue-500">({selectedUser.referredByCode})</span></span>
+                    </div>
+                  )}
+                </div>
               </div>
 
               <form id="manage-form" onSubmit={handleUpdateUser} className="space-y-5">

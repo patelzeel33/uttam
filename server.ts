@@ -16,7 +16,11 @@ const applicationSchema = new mongoose.Schema({
   experience: { type: String },
   status: { type: String, default: 'pending' },
   hoursLogged: { type: Number, default: 0 },
-  submittedAt: { type: Date, default: Date.now }
+  submittedAt: { type: Date, default: Date.now },
+  referral_code: { type: String, unique: true, sparse: true },
+  referred_by: { type: mongoose.Schema.Types.ObjectId, ref: 'Application', default: null },
+  referralCodeInput: { type: String },
+  ridersReferred: { type: Number, default: 0 },
 });
 
 // Avoid schema overwrite issue on hot reloads
